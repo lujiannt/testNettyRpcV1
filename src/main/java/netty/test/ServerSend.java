@@ -1,15 +1,7 @@
 package netty.test;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelId;
-import netty.coding.RequestInfo;
-import netty.config.NettyMapping;
-import netty.server.RpcServer;
 import service.NettyService;
 import service.serviceImpl.NettyServiceImpl;
-
-import java.util.Iterator;
-import java.util.Scanner;
 
 public class ServerSend {
 

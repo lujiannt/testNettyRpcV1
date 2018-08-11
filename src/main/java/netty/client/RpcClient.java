@@ -9,14 +9,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.HashedWheelTimer;
-import netty.coding.MessageDecoder;
-import netty.coding.MessageEncoder;
 import netty.heart.ConnectionWatchdog;
 import netty.heart.ConnectorIdleStateTrigger;
 
@@ -40,11 +39,12 @@ public class RpcClient {
                 return new ChannelHandler[] {
                         this,
                         new IdleStateHandler(0, 4, 0, TimeUnit.SECONDS),
+                        new ObjectDecoder(Integer.MAX_VALUE ,ClassResolvers.cacheDisabled(this
+                                .getClass().getClassLoader())),
+                        new ObjectEncoder(),
                         idleStateTrigger,
-                        new StringDecoder(),
-                        new StringEncoder(),
-//                        new MessageDecoder(),
-//                        new MessageEncoder(),
+//                        new StringDecoder(),
+//                        new StringEncoder(),
                         new PpcClientHandler()
                 };
             }

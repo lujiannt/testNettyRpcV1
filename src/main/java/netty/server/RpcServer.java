@@ -6,13 +6,12 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.serialization.ClassResolvers;
+import io.netty.handler.codec.serialization.ObjectDecoder;
+import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import netty.coding.MessageDecoder;
-import netty.coding.MessageEncoder;
 import netty.heart.AcceptorIdleStateTrigger;
 
 import java.net.InetSocketAddress;
@@ -38,10 +37,11 @@ public class RpcServer {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline().addLast(new IdleStateHandler(5, 0, 0, TimeUnit.SECONDS));
                             ch.pipeline().addLast(idleStateTrigger);
-                            ch.pipeline().addLast("decoder", new StringDecoder());
-                            ch.pipeline().addLast("encoder", new StringEncoder());
-//                            ch.pipeline().addLast(new MessageDecoder());
-//                            ch.pipeline().addLast(new MessageEncoder());
+                            ch.pipeline().addLast("decoder", new ObjectDecoder(Integer.MAX_VALUE ,ClassResolvers.cacheDisabled(this
+                                    .getClass().getClassLoader())));
+                            ch.pipeline().addLast("encoder", new ObjectEncoder());
+//                            ch.pipeline().addLast("decoder", new StringDecoder());
+//                            ch.pipeline().addLast("encoder", new StringEncoder());
                             ch.pipeline().addLast(new RpcServerHandler());
                         };
 
