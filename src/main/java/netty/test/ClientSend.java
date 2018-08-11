@@ -1,6 +1,7 @@
 package netty.test;
 
 import netty.client.RpcClient;
+import netty.model.RpcMessage;
 
 import java.util.Scanner;
 
@@ -17,8 +18,8 @@ public class ClientSend {
         String infoString = "";
         while (true){
             infoString = input.nextLine();
-            rpcClient.sendMessage(infoString);
-            System.out.println("yes");
+            RpcMessage message = new RpcMessage(RpcMessage.MESSAGE_TYPE_COMMON, infoString);
+            rpcClient.sendMessage(message);
         }
     }
 }

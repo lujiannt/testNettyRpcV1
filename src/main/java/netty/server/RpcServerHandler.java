@@ -3,7 +3,7 @@ package netty.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import netty.core.NettyMapping;
+import netty.core.ServerNettyMapping;
 import netty.model.RpcMessage;
 
 public class RpcServerHandler extends ChannelInboundHandlerAdapter {
@@ -11,7 +11,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         System.out.println(ctx.channel().remoteAddress().toString() + " connected!");
-//        NettyMapping.channelMap.put("2", ch.id());
+//        ServerNettyMapping.channelMap.put("2", ch.id());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("客户端与服务端连接关闭...");
 
-        NettyMapping.removeServerChannel(ctx.channel());
+        ServerNettyMapping.removeServerChannel(ctx.channel());
     }
 
     @Override
@@ -53,15 +53,15 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
                 break;
             case RpcMessage.MESSAGE_TYPE_HEART:
                 System.out.println(ctx.channel().remoteAddress() + "->Heart : " + rpcRequestMessage.getContent());
-                if (NettyMapping.getServerChannel(rpcRequestMessage.getContent()) == null) {
+                if (ServerNettyMapping.getServerChannel(rpcRequestMessage.getContent()) == null) {
+                    System.out.println("map is null");
                     Channel ch = ctx.channel();
-                    NettyMapping.group.add(ch);
-                    NettyMapping.serverChannelMap.put(rpcRequestMessage.getContent(), ch.id());
+                    ServerNettyMapping.group.add(ch);
+                    ServerNettyMapping.serverChannelMap.put(rpcRequestMessage.getContent(), ch.id());
                 }
                 break;
             case RpcMessage.MESSAGE_TYPE_RESPONSE:
                 System.out.println(ctx.channel().remoteAddress() + "->Response : " + rpcRequestMessage.getContent());
-
                 break;
             default:
                 System.err.println("unknow request!");

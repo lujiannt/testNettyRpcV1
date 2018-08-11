@@ -1,7 +1,8 @@
 package service.serviceImpl;
 
 import io.netty.channel.Channel;
-import netty.core.NettyMapping;
+import netty.core.ServerNettyMapping;
+import netty.model.RpcMessage;
 import netty.server.RpcServer;
 import service.NettyService;
 
@@ -16,13 +17,13 @@ public class NettyServiceImpl implements NettyService {
 
     @Override
     public int getChannelSize() {
-        return NettyMapping.group.size();
+        return ServerNettyMapping.group.size();
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(RpcMessage message) {
         new Thread(() -> {
-            Iterator<Channel> iterator = NettyMapping.group.iterator();
+            Iterator<Channel> iterator = ServerNettyMapping.group.iterator();
 
             while (iterator.hasNext()) {
                 Channel ch = iterator.next();

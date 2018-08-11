@@ -22,10 +22,10 @@ public class ConnectorIdleStateTrigger extends ChannelInboundHandlerAdapter {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.WRITER_IDLE) {
                 // write heartbeat to server
-                RpcMessage rpcRequestMessage = new RpcMessage(RpcMessage.MESSAGE_TYPE_COMMON, HEARTBEAT);
+                RpcMessage rpcRequestMessage = new RpcMessage(RpcMessage.MESSAGE_TYPE_HEART, HEARTBEAT);
                 ChannelFuture cf = ctx.writeAndFlush(rpcRequestMessage);
                 if(cf.isSuccess()) {
-                    System.out.println("yes");
+//                    System.out.println("yes");
                 }
             }
         } else {

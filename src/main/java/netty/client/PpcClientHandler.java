@@ -5,6 +5,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import netty.core.ClientNettyMapping;
 import netty.invoke.AbstractInvoker;
 import netty.model.RpcMessage;
 
@@ -25,17 +26,17 @@ public class PpcClientHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("停止时间是：" + new Date());
         System.out.println("PpcClientHandler channelInactive");
+
+        //TODO 从redis中拿
+        ClientNettyMapping.removeSocketChannel("9587");
     }
 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        String message = (String) msg;
-        System.out.println("RpcServer : " + message);
-        if (message.equals("Heartbeat")) {
-            ctx.write("has read message from server");
-            ctx.flush();
-        }
+        RpcMessage message = (RpcMessage) msg;
+        System.out.println("RpcServer : " + message.getContent());
+
         ReferenceCountUtil.release(msg);
     }
 

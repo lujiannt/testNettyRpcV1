@@ -18,6 +18,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.HashedWheelTimer;
 import netty.heart.ConnectionWatchdog;
 import netty.heart.ConnectorIdleStateTrigger;
+import netty.model.RpcMessage;
 
 import java.util.concurrent.TimeUnit;
 
@@ -97,7 +98,7 @@ public class RpcClient {
      *
      * @param msg
      */
-    public void sendMessage(String msg) {
+    public void sendMessage(RpcMessage msg) {
         if (socketChannel != null) {
             socketChannel.writeAndFlush(msg);
         }
