@@ -1,4 +1,4 @@
-package netty.test;
+package netty.test.chat;
 
 import netty.client.RpcClient;
 import netty.model.RpcMessage;

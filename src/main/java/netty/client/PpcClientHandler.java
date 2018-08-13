@@ -26,17 +26,11 @@ public class PpcClientHandler extends ChannelInboundHandlerAdapter {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.out.println("停止时间是：" + new Date());
         System.out.println("PpcClientHandler channelInactive");
-
-        //TODO 从redis中拿
-        ClientNettyMapping.removeSocketChannel("9587");
     }
-
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        RpcMessage message = (RpcMessage) msg;
-        System.out.println("RpcServer : " + message.getContent());
-
+        dealDifferentMsg(ctx, msg);
         ReferenceCountUtil.release(msg);
     }
 
@@ -47,16 +41,20 @@ public class PpcClientHandler extends ChannelInboundHandlerAdapter {
      * @param msg
      */
     private void dealDifferentMsg(ChannelHandlerContext ctx, Object msg) {
-        RpcMessage rpcRequestMessage = (RpcMessage) msg;
+        RpcMessage rpcMessage = (RpcMessage) msg;
 
-        switch(rpcRequestMessage.getType()){
+        switch(rpcMessage.getType()){
+            case RpcMessage.MESSAGE_TYPE_COMMON:
+                System.out.println("RpcServer : " + rpcMessage.getContent());
+                break;
             case RpcMessage.MESSAGE_TYPE_REQUEST:
-                System.out.println(ctx.channel().remoteAddress() + "->Request : " + rpcRequestMessage.getClassName());
+                System.out.println(ctx.channel().remoteAddress() + "->Request : " + rpcMessage.getClassName());
                 Object object = null;
                 RpcMessage rpcResponseMessage = null;
                 try {
-                    object = AbstractInvoker.invokeRequest(rpcRequestMessage);
+                    object = AbstractInvoker.invokeRequest(rpcMessage);
                     rpcResponseMessage = new RpcMessage();
+                    rpcResponseMessage.setMessageId(rpcMessage.getMessageId());
                     rpcResponseMessage.setType(RpcMessage.MESSAGE_TYPE_RESPONSE);
                     rpcResponseMessage.setError(null);
                     rpcResponseMessage.setResult(object);

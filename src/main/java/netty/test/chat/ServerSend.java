@@ -1,4 +1,4 @@
-package netty.test;
+package netty.test.chat;
 
 import io.netty.channel.Channel;
 import netty.core.ServerNettyMapping;

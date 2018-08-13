@@ -14,7 +14,7 @@ import netty.model.RpcMessage;
 @Sharable
 public class ConnectorIdleStateTrigger extends ChannelInboundHandlerAdapter {
     //TODO 这边要从本地端redis中获取停车场Id
-    private static final String HEARTBEAT = "9587";
+    private static final String HEARTBEAT = "1";
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

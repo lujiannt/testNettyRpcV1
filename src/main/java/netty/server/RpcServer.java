@@ -12,9 +12,12 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
+import netty.core.ServerNettyMapping;
 import netty.heart.AcceptorIdleStateTrigger;
+import netty.model.RpcMessage;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class RpcServer {
@@ -79,8 +82,11 @@ public class RpcServer {
      *
      * @param msg
      */
-    public void sendMessage(Object msg){
+    public void sendMessage(RpcMessage msg){
         if(serverSocketChannel != null){
+            String messageId = UUID.randomUUID().toString();
+            msg.setMessageId(messageId);
+            ServerNettyMapping.rpcMessageMap.put(messageId, msg);
             serverSocketChannel.writeAndFlush(msg);
         }
     }

@@ -25,6 +25,31 @@ public class ServerNettyMapping {
     public static Map<String, ChannelId> serverChannelMap = new HashMap<>();
 
     /**
+     * 本地端返回的消息映射
+     */
+    public static Map<String, RpcMessage> rpcMessageMap = new HashMap<>();
+
+    /**
+     * 注册监听返回响应消息
+     *
+     * @param uuid
+     */
+    public static RpcMessage registerListenerAndReturn(String uuid) {
+        RpcMessage rpcMessage = null;
+        try {
+            Thread.sleep(500);
+            while (rpcMessage == null) {
+                rpcMessage = rpcMessageMap.get(uuid);
+            }
+            rpcMessageMap.remove(uuid);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            return rpcMessage;
+        }
+    }
+
+    /**
      * server端：根据停车场id获取channel
      *
      * @param parkingId
@@ -56,7 +81,7 @@ public class ServerNettyMapping {
         Set<String> keys = ServerNettyMapping.serverChannelMap.keySet();
         Iterator<String> iterator = keys.iterator();
 
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             ChannelId chId = ServerNettyMapping.serverChannelMap.get(iterator.next());
             if (chId.asShortText().equals(channelId.asShortText()) && chId.asLongText().equals(channelId.asLongText())) {
                 iterator.remove();

@@ -45,23 +45,25 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
      * @param msg
      */
     private void dealDifferentMsg(ChannelHandlerContext ctx, Object msg) {
-        RpcMessage rpcRequestMessage = (RpcMessage) msg;
+        RpcMessage rpcMessage = (RpcMessage) msg;
 
-        switch(rpcRequestMessage.getType()){
+        switch(rpcMessage.getType()){
             case RpcMessage.MESSAGE_TYPE_COMMON:
-                System.out.println(ctx.channel().remoteAddress() + "->Content : " + rpcRequestMessage.getContent());
+                System.out.println(ctx.channel().remoteAddress() + "->Content : " + rpcMessage.getContent());
                 break;
             case RpcMessage.MESSAGE_TYPE_HEART:
-                System.out.println(ctx.channel().remoteAddress() + "->Heart : " + rpcRequestMessage.getContent());
-                if (ServerNettyMapping.getServerChannel(rpcRequestMessage.getContent()) == null) {
+                System.out.println(ctx.channel().remoteAddress() + "->Heart : " + rpcMessage.getContent());
+                if (ServerNettyMapping.getServerChannel(rpcMessage.getContent()) == null) {
                     System.out.println("map is null");
                     Channel ch = ctx.channel();
                     ServerNettyMapping.group.add(ch);
-                    ServerNettyMapping.serverChannelMap.put(rpcRequestMessage.getContent(), ch.id());
+                    ServerNettyMapping.serverChannelMap.put(rpcMessage.getContent(), ch.id());
                 }
                 break;
             case RpcMessage.MESSAGE_TYPE_RESPONSE:
-                System.out.println(ctx.channel().remoteAddress() + "->Response : " + rpcRequestMessage.getContent());
+                System.out.println(ctx.channel().remoteAddress() + "->Response : " + rpcMessage.getContent());
+
+                ServerNettyMapping.rpcMessageMap.put(rpcMessage.getMessageId(), rpcMessage);
                 break;
             default:
                 System.err.println("unknow request!");

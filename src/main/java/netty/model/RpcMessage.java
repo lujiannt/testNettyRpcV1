@@ -33,8 +33,15 @@ public class RpcMessage implements Serializable {
         this.content = content;
     }
 
+    public RpcMessage(int type, String className, String methodName, Class<?>[] parameterTypes, Object[] parameters) {
+        this.type = type;
+        this.className = className;
+        this.methodName = methodName;
+        this.parameterTypes = parameterTypes;
+        this.parameters = parameters;
+    }
+
     /**
-     * TODO 预留字段
      * 消息id
      */
     private String messageId;
